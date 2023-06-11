@@ -104,17 +104,17 @@ export class UserService {
   async deleteUserById(id: number): Promise<ResponseDto> {
     try {
       const user = await this.getUserById(id);
-  
+
       if (!user) {
         throw new NotFoundException(USER_NOT_FOUND_MESSAGE);
       }
-  
+
       // if (user.role !== ROLE.SUPER) {
       //   throw new UnauthorizedException(SUPER_ADMIN_ACCESS_DENIED);
       // }
-  
+
       const result = await this.userRepository.delete(id);
-  
+
       if (result.affected > 0) {
         return {
           statusCode: HttpStatus.OK,
@@ -128,7 +128,7 @@ export class UserService {
       );
     }
   }
-  
+
 
   // GET USERB_BY EMAIL ID
   async getUserByEmail(email: string): Promise<User> {
@@ -167,30 +167,30 @@ export class UserService {
     }
   }
 
-    // reset password token and expire time save
-    async setTokenAndDate(email, token: string, expireTime: Date): Promise<void> {
-      try {
-        const user = new User();
-        user.reset_password_token = token;
-        user.reset_password_token_expire_time = expireTime;
-  
-        if (token != null && expireTime != null) {
-          await this.userRepository
-            .createQueryBuilder()
-            .update()
-            .set(user)
-            .where({ email })
-            .execute();
-        }
-      } catch (error) {
-        throw new HttpException(
-          error.message,
-          error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  // reset password token and expire time save
+  async setTokenAndDate(email, token: string, expireTime: Date): Promise<void> {
+    try {
+      const user = new User();
+      user.reset_password_token = token;
+      user.reset_password_token_expire_time = expireTime;
 
-    // update password user
+      if (token != null && expireTime != null) {
+        await this.userRepository
+          .createQueryBuilder()
+          .update()
+          .set(user)
+          .where({ email })
+          .execute();
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  // update password user
   async userPasswordUpdate(email: string, password: string): Promise<boolean> {
     try {
       const user = new User();
@@ -210,26 +210,37 @@ export class UserService {
     }
   }
 
-   // get all user
-   async findAlluser(page: number, limit: number): Promise<ResponseDto> {
+  // get All user
+  async findAllUsers(page: number, limit: number, name?: string): Promise<ResponseDto> {
     try {
       page = page || 1;
       limit = limit || 5;
       const skip = (page - 1) * limit;
-      const users = await this.userRepository
-        .createQueryBuilder('user')
+
+      let query = this.userRepository.createQueryBuilder('user');
+
+      if (name) {
+        query = query.where('user.first_name LIKE :name', { name: `%${name}%` });
+      }
+
+      const users = await query
         .skip(skip)
         .take(limit)
         .getMany();
+
       return {
         statusCode: 200,
-        message: USER_RETRIEVED_MESSAGE,
+        message: 'Users retrieved successfully',
         data: users,
       };
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error.message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  }
-  
+
+}
+

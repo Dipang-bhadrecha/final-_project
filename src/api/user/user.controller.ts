@@ -7,6 +7,7 @@ import { ROLE } from 'src/helper/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/guard/roles.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
+import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -39,13 +40,16 @@ export class UserController {
     return this.userService.deleteUserById(id);
   }
 
-   // FINDALL USER
-   @Get('findAll')
-   async userFindAll(
-     @Query('page') page: number,
-     @Query('limit') limit: number,
-   ): Promise<ResponseDto> {
-     return this.userService.findAlluser(page, limit);
-   }
-
+  @Get('findAll')
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'name', type: String, required: false })
+  @ApiResponse({ status: 200, description: 'OK' })
+  async getAllUsers(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('name') name: string,
+  ): Promise<ResponseDto> {
+    return this.userService.findAllUsers(page, limit, name);
+  }
 }
