@@ -55,52 +55,6 @@ export class AuthService {
     }
   }
 
-  // // FORGOT PASSWORD
-  // async forgotPassword(email: string, req): Promise<UpdateResponseDto> {
-  //   try {
-  //     const user = await this.userService.getUserByEmail(email);
-
-  //     if (!user) {
-  //       throw new UnauthorizedException(EMAIL_NOT_FOUND);
-  //     }
-
-  //     const userEmailid = user.email;
-
-  //     const token = jwt.sign(
-  //       { user: user.id, email: userEmailid },
-  //       jwtConstants.secret,
-  //       {},
-  //     );
-
-  //     const expireTime = new Date(Date.now() + 15 * 60 * 1000);
-
-  //     await this.userService.setTokenAndDate(userEmailid, token, expireTime);
-
-  //     const resetPasswordLink = `${req.protocol}://${req.get(
-  //       'host',
-  //     )}/auth/password-reset/${token}`;
-
-  //     const res = await EmailService.sendEmail(
-  //       userEmailid,
-  //       'Reset Password link',
-  //       resetPasswordLink,
-  //     );
-
-  //     if (!res.response) {
-  //       throw new NotFoundException(EMAIL_NOT_FOUND);
-  //     }
-  //     return {
-  //       statusCode: 201,
-  //       message: FORGOT_PASSWORD_SENT,
-  //     };
-  //   } catch (error) {
-  //     throw new HttpException(
-  //       error.message,
-  //       error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
-  //     );
-  //   }
-  // }
-
   // FORGOT PASSWORD
   async forgotPassword(email: string, req): Promise<UpdateResponseDto> {
     try {
