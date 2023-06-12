@@ -59,10 +59,10 @@ export class AuthService {
   async forgotPassword(email: string, req): Promise<UpdateResponseDto> {
     try {
       const user = await this.userService.getUserByEmail(email);
-
       if (!user) {
         throw new UnauthorizedException('Email not found');
       }
+      
 
       const userEmailid = user.email;
 
@@ -85,7 +85,8 @@ export class AuthService {
         'Reset Password link',
         resetPasswordLink,
       );
-
+      console.log(res);
+      
       if (!res.response) {
         throw new NotFoundException('Email not found');
       }

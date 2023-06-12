@@ -1,19 +1,20 @@
 import * as nodemailer from 'nodemailer';
 export class EmailService {
-  static async sendEmail(to: string, subject: string, message: string) {
-    const transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
+    static async sendEmail(to: string, subject: string, message: string) {
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      html: `
+        const transporter = nodemailer.createTransport({
+            service: process.env.EMAIL_SERVICE,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to,
+            subject,
+            html: `
             <head>
                 
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -160,18 +161,12 @@ export class EmailService {
                 </table>
             </body>
             `,
-    };
+        };
 
-    try {
-      return await transporter.sendMail(mailOptions);
-    } catch (error) {    
-      return { error: `Failed to send email to ${to}` };
+        try {
+            return await transporter.sendMail(mailOptions);
+        } catch (error) {
+            return { error: `Failed to send email to ${to}` };
+        }
     }
-
-    try {
-      return await transporter.sendMail(mailOptions);
-    } catch (error) {
-      return { error: `Failed to send email to ${to}` };
-    }
-  }
 }

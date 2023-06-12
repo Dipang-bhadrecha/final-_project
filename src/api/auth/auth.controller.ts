@@ -24,6 +24,7 @@ export class AuthController {
     return this.authService.forgotPassword(email, req);
   }
 
+  // RESET PASSWORD
   @Post('/password-reset/:token')
   async resetPassword(@Param('token') token: string, @Body() userPassword): Promise<UpdateResponseDto> {
     return await this.authService.resetPassword(token, userPassword);
