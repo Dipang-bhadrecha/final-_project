@@ -4,19 +4,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import ResponseDto from 'src/utils/create-response.dto';
 import { ROLE } from 'src/helper/role.enum';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '../auth/guard/roles.guard';
 import { Roles } from '../auth/decorator/roles.decorator';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../auth/guard/roles.guard';
 
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   // CREATE USER
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles(ROLE.SUPER)
-  @Post('register')
+  @Roles(ROLE.SUPER)
+  @Post('create')
   async userRegister(@Body() createUserDto: CreateUserDto): Promise<ResponseDto> {
     return this.userService.createUser(createUserDto);
   }
@@ -32,7 +32,7 @@ export class UserController {
 
   // DELETE USER
   // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles(ROLE.ADMIN, ROLE.USER)
+  @Roles(ROLE.SUPER)
   @Delete(':id')
   async deleteUserById(
     @Param('id', ParseIntPipe) id: number,

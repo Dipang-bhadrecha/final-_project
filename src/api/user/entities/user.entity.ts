@@ -22,7 +22,7 @@ export class User {
   @Column({ type: 'varchar', length: 200, nullable: false })
   password: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'enum', enum:ROLE, nullable: false })
   role: ROLE;
 
   @Column({ type: 'varchar', length: 300, nullable: true })

@@ -25,7 +25,7 @@ export class CreateUserDto {
     @IsNotEmpty()
     phone: number;
 
-    @ApiProperty({ example: "xyz@gmail.com" })  
+    @ApiProperty({ example: "xyz@gmail.com" })
     @IsNotEmpty()
     @IsEmail()
     email: string;
@@ -44,7 +44,8 @@ export class CreateUserDto {
     @IsOptional()
     is_active?: boolean;
 
+    @ApiProperty({ enum: ROLE, enumName: 'Role', example: ROLE.SUPER })
     @IsString()
     @IsOptional()
-    role?: ROLE;
+    role?: ROLE = ROLE.SUPER;
 }

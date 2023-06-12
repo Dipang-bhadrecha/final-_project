@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,10 +19,6 @@ export class UserService {
   // CREATE USER
   async createUser(createUserDto: CreateUserDto): Promise<ResponseDto> {
     try {
-      // if (createUserDto.role !== ROLE.SUPER) {
-      //   throw new BadRequestException(SUPER_ADMIN_ACCESS_DENIED);
-      // }
-
       const { first_name, last_name, phone, email, password } = createUserDto;
 
       const existingUser = await this.getUserByEmail(email);
@@ -45,7 +41,7 @@ export class UserService {
         phone,
         email,
         password: hashedPassword,
-        role: ROLE.SUPER,
+        role: ROLE.SUB,
       });
 
       await this.userRepository.save(user);
@@ -109,10 +105,6 @@ export class UserService {
         throw new NotFoundException(USER_NOT_FOUND_MESSAGE);
       }
 
-      // if (user.role !== ROLE.SUPER) {
-      //   throw new UnauthorizedException(SUPER_ADMIN_ACCESS_DENIED);
-      // }
-
       const result = await this.userRepository.delete(id);
 
       if (result.affected > 0) {
@@ -134,8 +126,8 @@ export class UserService {
   async getUserByEmail(email: string): Promise<User> {
     try {
       const result = await this.userRepository.findOne({ where: { email } });
-
       return result;
+
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -240,7 +232,5 @@ export class UserService {
       );
     }
   }
-
-
 }
 
